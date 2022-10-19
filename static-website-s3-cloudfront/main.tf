@@ -36,7 +36,7 @@ resource "aws_s3_bucket_cors_configuration" "s3BucketCors" {
 
 resource "aws_s3_bucket_acl" "example_bucket_acl" {
   bucket = aws_s3_bucket.s3Bucket.bucket
-  acl    = "public"
+  acl    = "public-read"
 }
 
 
