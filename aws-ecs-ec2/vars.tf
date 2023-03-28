@@ -55,6 +55,11 @@ variable "container_port_frontend" {
 variable "container_port_backend" {
   description = "Port of container"
 }
+
 variable "service_desired_count" {
   description = "number of task running in a service"
+}
+
+variable "subnets" {
+  description = "list of subnets"
 }
