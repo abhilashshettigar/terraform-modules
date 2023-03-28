@@ -130,7 +130,7 @@ resource "aws_lb" "frontend" {
   name                       = "${var.name}-alb-frontend-${var.environment}"
   internal                   = false
   load_balancer_type         = "application"
-  security_groups            = aws_security_group.alb.id
+  security_groups            = [aws_security_group.alb.id]
   subnets                    = var.subnets
   enable_deletion_protection = false
   count                      = var.frontend ? 1 : 0
@@ -200,13 +200,13 @@ resource "aws_lb" "backend" {
   name                       = "${var.name}-alb-backend-${var.environment}"
   internal                   = false
   load_balancer_type         = "application"
-  security_groups            = aws_security_group.alb.id
+  security_groups            = [aws_security_group.alb.id]
   subnets                    = var.subnets
   enable_deletion_protection = false
   count                      = var.backend ? 1 : 0
 
   tags = {
-    Name        = "${var.name}-alb-${var.environment}"
+    Name        = "${var.name}-alb-backend-${var.environment}"
     Environment = var.environment
   }
 }
@@ -229,7 +229,7 @@ resource "aws_lb_target_group" "backend" {
   }
 
   tags = {
-    Name        = "${var.name}-tg-${var.environment}"
+    Name        = "${var.name}-tg-backend-${var.environment}"
     Environment = var.environment
   }
 }
@@ -284,7 +284,7 @@ resource "aws_launch_template" "ecs_launch_config" {
   iam_instance_profile {
     name = aws_iam_instance_profile.ec2_instance_role.name
   }
-  vpc_security_group_ids = aws_security_group.ec2.id
+  vpc_security_group_ids = [aws_security_group.ec2.id]
   key_name               = var.pem_file_name
   instance_type          = var.instance_type
   block_device_mappings {
@@ -459,7 +459,7 @@ resource "aws_ecs_task_definition" "frontendTask" {
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   container_definitions = jsonencode([{
     name      = "${var.name}-container-${var.environment}"
-    image     = "${var.frontend == 1 ? "${var.aws_ecr_repository_url_frontend}:prod" : null}"
+    image     = "${var.frontend == 1 ? "${aws_ecr_repository.frontend[0].repository_url}:prod" : null}"
     essential = true
     environment = [{
       name  = "LOG_LEVEL",
@@ -495,11 +495,11 @@ resource "aws_ecs_task_definition" "backendTask" {
   requires_compatibilities = ["EC2"]
   cpu                      = var.container_cpu
   memory                   = var.container_memory
-  execution_role_arn       = var.ecs_task_execution_role
-  task_role_arn            = var.ecs_task_role
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
   container_definitions = jsonencode([{
     name      = "${var.name}-container-${var.environment}"
-    image     = "${var.backend == 1 ? "${var.aws_ecr_repository_url_backend}:prod" : null}"
+    image     = "${var.backend == 1 ? "${aws_ecr_repository.backend[0].repository_url}:prod" : null}"
     essential = true
     environment = [{
       name  = "LOG_LEVEL",
@@ -525,7 +525,7 @@ resource "aws_ecs_task_definition" "backendTask" {
   }])
   count = var.backend ? 1 : 0
   tags = {
-    Name        = "${var.name}-task-${var.environment}"
+    Name        = "${var.name}-backend-task-${var.environment}"
     Environment = var.environment
   }
 }

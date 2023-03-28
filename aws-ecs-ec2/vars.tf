@@ -8,17 +8,14 @@ variable "environment" {
 
 variable "backend" {
   description = "Turn on Backend ECS service and related infra"
-  default     = false
 }
 
 variable "frontend" {
   description = "Turn on frontend ECS service and related infra"
-  default     = true
 }
 
 variable "vpc_id" {
   description = "vpc id of the region"
-  default     = "vpc-b5351ddd"
 }
 
 variable "health_check_path_frontend" {
@@ -55,11 +52,14 @@ variable "container_port_frontend" {
 variable "container_port_backend" {
   description = "Port of container"
 }
-
 variable "service_desired_count" {
   description = "number of task running in a service"
 }
 
 variable "subnets" {
-  description = "list of subnets"
+
+}
+
+variable "region" {
+
 }
