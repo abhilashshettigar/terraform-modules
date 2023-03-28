@@ -40,3 +40,21 @@ variable "instance_type" {
 variable "alb_tls_cert_arn" {
   description = "ceritifcate for loadbalancer"
 }
+variable "container_cpu" {
+  description = "The number of cpu units used by the task"
+}
+
+variable "container_memory" {
+  description = "The amount (in MiB) of memory used by the task"
+}
+
+variable "container_port_frontend" {
+  description = "Port of container"
+}
+
+variable "container_port_backend" {
+  description = "Port of container"
+}
+variable "service_desired_count" {
+  description = "number of task running in a service"
+}
