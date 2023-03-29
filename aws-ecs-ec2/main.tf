@@ -685,6 +685,20 @@ resource "aws_s3_bucket" "env" {
   bucket = "${var.name}-env"
 }
 
+resource "aws_s3_bucket_acl" "env_acl" {
+  bucket = aws_s3_bucket.env.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "env_versioning" {
+  bucket = aws_s3_bucket.env.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+
+
 
 #=======================================================================
 #                               SG
