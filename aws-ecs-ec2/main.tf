@@ -290,7 +290,7 @@ resource "aws_launch_template" "ecs_launch_config" {
   block_device_mappings {
     device_name = "/dev/xvda"
     ebs {
-      volume_size = 15
+      volume_size = 30
     }
   }
   user_data   = filebase64("./scripts/ecs.sh")
