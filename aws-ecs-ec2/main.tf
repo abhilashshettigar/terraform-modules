@@ -459,7 +459,7 @@ resource "aws_ecs_task_definition" "frontendTask" {
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   container_definitions = jsonencode([{
     name      = "${var.name}-container-${var.environment}"
-    image     = "${var.frontend == 1 ? "${aws_ecr_repository.frontend[0].repository_url}:prod" : null}"
+    image     = "${aws_ecr_repository.frontend[0].repository_url}:prod"
     essential = true
     environment = [{
       name  = "LOG_LEVEL",
@@ -467,7 +467,7 @@ resource "aws_ecs_task_definition" "frontendTask" {
     }]
     environmentFiles = [{
       type  = "s3",
-      value = "arn:aws:s3:::${var.name}-env/frontend/.env"
+      value = "arn:aws:s3:::${var.name}-env-${var.environment}/frontend/.env"
     }]
     portMappings = [{
       protocol      = "tcp"
@@ -499,7 +499,7 @@ resource "aws_ecs_task_definition" "backendTask" {
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   container_definitions = jsonencode([{
     name      = "${var.name}-container-${var.environment}"
-    image     = "${var.backend == 1 ? "${aws_ecr_repository.backend[0].repository_url}:prod" : null}"
+    image     = "${aws_ecr_repository.backend[0].repository_url}:prod"
     essential = true
     environment = [{
       name  = "LOG_LEVEL",
@@ -507,7 +507,7 @@ resource "aws_ecs_task_definition" "backendTask" {
     }]
     environmentFiles = [{
       type  = "s3",
-      value = "arn:aws:s3:::${var.name}-env/backend/.env"
+      value = "arn:aws:s3:::${var.name}-env-${var.environment}/backend/.env"
     }]
     portMappings = [{
       protocol      = "tcp"
@@ -682,7 +682,7 @@ resource "aws_appautoscaling_policy" "dev_to_cpu_front" {
 #                               S3
 #=======================================================================
 resource "aws_s3_bucket" "env" {
-  bucket = "${var.name}-env"
+  bucket = "${var.name}-env-${var.environment}"
 }
 
 resource "aws_s3_bucket_acl" "env_acl" {
