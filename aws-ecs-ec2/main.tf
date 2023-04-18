@@ -550,7 +550,7 @@ resource "aws_ecs_service" "frontendService" {
   count                              = var.frontend ? 1 : 0
 
   load_balancer {
-    target_group_arn = var.frontend == 1 ? "${aws_lb_target_group.frontend[0].arn}" : null
+    target_group_arn = "${aws_lb_target_group.frontend[0].arn}"
     container_name   = "${var.name}-container-${var.environment}"
     container_port   = var.container_port_frontend
   }
@@ -574,7 +574,7 @@ resource "aws_ecs_service" "backendService" {
   scheduling_strategy                = "REPLICA"
   count                              = var.backend ? 1 : 0
   load_balancer {
-    target_group_arn = var.backend == 1 ? "${aws_lb_target_group.backend[0].arn}" : null
+    target_group_arn = "${aws_lb_target_group.backend[0].arn}"
     container_name   = "${var.name}-container-${var.environment}"
     container_port   = var.container_port_backend
   }
