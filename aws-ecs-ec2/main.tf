@@ -13,14 +13,14 @@ resource "aws_iam_policy" "s3_env_access" {
           "s3:GetObject",
         ]
         Effect   = "Allow"
-        Resource = ["arn:aws:s3:::${var.name}-env/*", "arn:aws:s3:::${var.name}-env"]
+        Resource = ["arn:aws:s3:::${var.name}-env-${var.environment}/*", "arn:aws:s3:::${var.name}-env-${var.environment}"]
       },
       {
         Action = [
           "s3:GetBucketLocation",
         ]
         Effect   = "Allow"
-        Resource = ["arn:aws:s3:::${var.name}-env"]
+        Resource = ["arn:aws:s3:::${var.name}-env-${var.environment}"]
       }
     ]
   })
